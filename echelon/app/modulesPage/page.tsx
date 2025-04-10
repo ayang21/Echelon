@@ -20,7 +20,11 @@ const quizzes = [
   },
 ];
 
-export default function ModulePage({ params }: { params: { id: string } }) {
+type ModulePageProps = {
+  params: { id: string };
+};
+
+export default function ModulePage({ params }: ModulePageProps) {
   const [progress, setProgress] = useState<number[]>([]); 
   const [quizCompleted, setQuizCompleted] = useState(false);
 

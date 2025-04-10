@@ -1,6 +1,12 @@
 import Link from 'next/link';
 
-export default function ModuleCard({ module }: { module: any }) {
+type Module = {
+  id: string;
+  title: string;
+  description: string;
+};
+
+export default function ModuleCard({ module }: { module: Module }) {
   return (
     <div className="p-4 bg-white border rounded-lg shadow hover:shadow-lg transition">
       <h2 className="text-xl font-semibold text-blue-800">{module.title}</h2>
