@@ -1,0 +1,103 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Sanjeet Brar",
+      "role": "Student Athlete",
+      "school": "Boston College",
+      "completedModules": [1]
+    }
+  ],
+  "modules": [
+    {
+      "id": "1",
+      "title": "Basics of Investing",
+      "description": "Learn the fundamentals of investing.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "Introduction to Investing",
+          "url": "https://www.youtube.com/watch?v=example1"
+        },
+        {
+          "id": 2,
+          "title": "Why Investing Matters",
+          "url": "https://www.youtube.com/watch?v=example2"
+        },
+        {
+          "id": 3,
+          "title": "Types of Investments",
+          "url": "https://www.youtube.com/watch?v=example3"
+        }
+      ],
+      "quiz": [
+        {
+          "id": 1,
+          "question": "What is the primary goal of investing?",
+          "options": ["To lose money", "To grow wealth", "To avoid taxes", "To save money"],
+          "correct": 1
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Advanced Investing Strategies",
+      "description": "Dive deeper into advanced strategies.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "Understanding Options and Derivatives",
+          "url": "https://www.youtube.com/watch?v=example4"
+        },
+        {
+          "id": 2,
+          "title": "Leveraging Assets for Greater Return",
+          "url": "https://www.youtube.com/watch?v=example5"
+        }
+      ],
+      "quiz": [
+        {
+          "id": 1,
+          "question": "What is a common risk of using leverage?",
+          "options": [
+            "Guaranteed returns",
+            "Reduced volatility",
+            "Increased losses if investments decline",
+            "Improved diversification"
+          ],
+          "correct": 2
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Risk Management",
+      "description": "Understand and manage investment risks.",
+      "videos": [
+        {
+          "id": 1,
+          "title": "Identifying Different Types of Risk",
+          "url": "https://www.youtube.com/watch?v=example6"
+        },
+        {
+          "id": 2,
+          "title": "Hedging and Diversification",
+          "url": "https://www.youtube.com/watch?v=example7"
+        }
+      ],
+      "quiz": [
+        {
+          "id": 1,
+          "question": "Which is an example of market risk?",
+          "options": [
+            "The entire stock market declines",
+            "A company CEO resigns",
+            "Fraud by an investment advisor",
+            "A brokerage account is hacked"
+          ],
+          "correct": 0
+        }
+      ]
+    }
+  ]
+}
