@@ -19,7 +19,7 @@ export default function Quiz({ question, options, correct }: { question: string,
         ))}
       </ul>
       <button onClick={handleSubmit} className="mt-2 bg-blue-500 text-white px-4 py-1 rounded">Submit</button>
-      {feedback && <p className="mt-2">{feedback}</p>}
+      {feedback && <p className="mt-2 text-gray-800">{feedback}</p>}
     </div>
   );
 }
