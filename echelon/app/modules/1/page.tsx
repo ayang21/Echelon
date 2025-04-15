@@ -53,7 +53,7 @@ export default function Module1Page() {
               <button
                 onClick={() => handleVideoComplete(video.id)}
                 disabled={index > 0 && !progress.includes(moduleData.videos[index - 1].id)}
-                className={`block w-full text-left p-4 border rounded-lg ${
+                className={`block w-full text-left p-4 border rounded-lg text-gray-800 ${
                   progress.includes(video.id) ? 'bg-green-100' : 'bg-white'
                 }`}
               >
