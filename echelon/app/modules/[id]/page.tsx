@@ -3,9 +3,18 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Quiz from '../../Components/Quiz';
+import StreakTracker from '../../Components/StreakTracker';
 
-export default function Module1Page() {
-  const [moduleData, setModuleData] = useState<any>(null);
+type Module = {
+  id: string;
+  title: string;
+  description: string;
+  videos: { id: number; title: string; url: string }[];
+  quiz: { id: number; question: string; options: string[]; correct: number }[];
+};
+
+export default function ModulePage({ params }: { params: { id: string } }) {
+  const [moduleData, setModuleData] = useState<Module | null>(null);
   const [progress, setProgress] = useState<number[]>([]);
   const [quizCompleted, setQuizCompleted] = useState(false);
 
@@ -13,11 +22,11 @@ export default function Module1Page() {
     fetch('/data/sampleData.json')
       .then((res) => res.json())
       .then((data) => {
-        const thisModule = data.modules.find((mod: any) => mod.id === '1');
-        setModuleData(thisModule);
+        const thisModule = data.modules.find((mod: Module) => mod.id === params.id);
+        setModuleData(thisModule || null);
       })
       .catch((err) => console.error('Failed to load module data:', err));
-  }, []);
+  }, [params.id]);
 
   const handleVideoComplete = (videoId: number) => {
     if (!progress.includes(videoId)) {
@@ -44,11 +53,14 @@ export default function Module1Page() {
       <h1 className="text-3xl font-bold text-center text-blue-700 mb-6">
         Module: {moduleData.title}
       </h1>
+      <p className="text-center text-gray-600 mb-6">{moduleData.description}</p>
+
+      <StreakTracker days={5} />
 
       <div className="mb-6">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Videos</h2>
         <ul>
-          {moduleData.videos.map((video: any, index: number) => (
+          {moduleData.videos.map((video, index) => (
             <li key={video.id} className="mb-4">
               <button
                 onClick={() => handleVideoComplete(video.id)}
@@ -67,11 +79,14 @@ export default function Module1Page() {
       {progress.length === moduleData.videos.length && !quizCompleted && (
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">Quiz</h2>
-          <Quiz
-            question={moduleData.quiz[0].question}
-            options={moduleData.quiz[0].options}
-            correct={moduleData.quiz[0].correct}
-          />
+          {moduleData.quiz.map((quizItem) => (
+            <Quiz
+              key={quizItem.id}
+              question={quizItem.question}
+              options={quizItem.options}
+              correct={quizItem.correct}
+            />
+          ))}
           <button
             onClick={handleQuizComplete}
             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
