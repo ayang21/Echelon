@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ProgressProvider } from "./context/ProgressContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ export default function RootLayout({
       <body
         className={`bg-gray-100 text-gray-800 font-sans antialiased`}
       >
-        {children}
+       <ProgressProvider>{children}</ProgressProvider> 
       </body>
     </html>
   );

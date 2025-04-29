@@ -1,11 +1,19 @@
 "use client";
 import { useEffect, useState } from 'react';
+import { useProgress } from '../context/ProgressContext';
 import ModuleCard from '../Components/ModuleCard';
 import Link from 'next/link';
 
+type Module = {
+  id: string;
+  title: string;
+  description: string;
+};
+
 export default function ModulesPage() {
-  const [modules, setModules] = useState([]);
+  const [modules, setModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
+  const { progressState } = useProgress();
 
   useEffect(() => {
     fetch('/Data/sampleData.json')
@@ -36,7 +44,11 @@ export default function ModulesPage() {
       <h1 className="text-3xl font-bold text-center text-blue-700 mb-6">Modules</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {modules.map((module) => (
-          <ModuleCard key={module["id"]} module={module} />
+          <ModuleCard
+            key={module.id}
+            module={module}
+            progress={progressState[module.id]}
+          />
         ))}
       </div>
     </div>
