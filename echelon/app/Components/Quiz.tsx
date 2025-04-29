@@ -1,25 +1,44 @@
 import { useState } from 'react';
 
-export default function Quiz({ question, options, correct }: { question: string, options: string[], correct: number }) {
+export default function Quiz({ question, options, correct, onAnswer }: { question: string, options: string[], correct: number, onAnswer: (isCorrect: boolean) => void }) {
   const [selected, setSelected] = useState<number | null>(null);
-  const [feedback, setFeedback] = useState('');
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
   const handleSubmit = () => {
-    setFeedback(selected === correct ? '✅ Correct!' : '❌ Try again.');
+    if (selected === null) return;
+    const result = selected === correct;
+    setIsCorrect(result);
+    onAnswer(result);
   };
 
   return (
-    <div className="p-4">
-      <h3 className="font-bold text-gray-800">{question}</h3>
-      <ul>
-        {options.map((opt, i) => (
-          <li key={i} onClick={() => setSelected(i)} className={`cursor-pointer p-2 border my-1 text-gray-800 ${selected === i ? 'bg-blue-100' : ''}`}>
-            {opt}
+    <div className="mb-4 text-black">
+      <p className="text-lg font-semibold">{question}</p>
+      <ul className="mt-2">
+        {options.map((option, index) => (
+          <li key={index} className="mb-2">
+            <button
+              onClick={() => setSelected(index)}
+              className={`block w-full text-left p-2 border rounded ${
+                selected === index ? 'bg-blue-100 border-blue-400' : 'bg-white border-gray-300'
+              }`}
+            >
+              {option}
+            </button>
           </li>
         ))}
       </ul>
-      <button onClick={handleSubmit} className="mt-2 bg-blue-500 text-white px-4 py-1 rounded">Submit</button>
-      {feedback && <p className="mt-2 text-gray-800">{feedback}</p>}
+      <button
+        onClick={handleSubmit}
+        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+      >
+        Submit Answer
+      </button>
+      {isCorrect !== null && (
+        <p className={`mt-2 font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
+          {isCorrect ? 'Correct!' : 'Incorrect!'}
+        </p>
+      )}
     </div>
   );
 }
