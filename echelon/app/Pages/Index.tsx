@@ -9,7 +9,7 @@ export default function Home() {
       </header>
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center text-center px-6 py-12">
+      <main className="flex flex-col items-center text-center px-6 py-12">
         <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 max-w-2xl">
           Level Up Your Financial Game
         </h2>
