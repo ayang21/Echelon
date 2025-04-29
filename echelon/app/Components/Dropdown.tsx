@@ -1,8 +1,12 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, ReactNode } from 'react';
 
-const Dropdown = ({ title, children }) => {
+type DropdownProps = {
+  title: string;
+  children: ReactNode;
+}
+const Dropdown = ({ title, children }: DropdownProps) => {
     const [isOpen, setIsOpen] = useState(false);
-    const contentRef = useRef(null);
+    const contentRef = useRef<HTMLDivElement | null>(null);
   
     const handleToggle = () => {
       setIsOpen(!isOpen);
@@ -30,7 +34,7 @@ const Dropdown = ({ title, children }) => {
         <div
           ref={contentRef}
           style={{
-            maxHeight: isOpen ? `${contentRef.current.scrollHeight}px` : '0',
+            maxHeight: isOpen ? `${contentRef.current?.scrollHeight}px` : '0',
             overflow: 'hidden',
             transition: 'max-height 0.2s ease-in-out',
           }}
