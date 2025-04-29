@@ -17,7 +17,7 @@ export default function ModulePage({ params }: ModulePageProps) {
 
 
   useEffect(() => {
-    fetch('/data/sampleData.json')
+    fetch('/Data/sampleData.json')
       .then((res) => res.json())
       .then((data) => {
         const foundModule = data.modules.find((mod: any) => mod.id === params.id);

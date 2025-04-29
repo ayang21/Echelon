@@ -20,7 +20,7 @@ export default function ModulePage({ params }: { params: { id: string } }) {
   const [quizResults, setQuizResults] = useState<boolean[]>([]);
 
   useEffect(() => {
-    fetch('/data/sampleData.json')
+    fetch('/Data/sampleData.json')
       .then((res) => res.json())
       .then((data) => {
         const thisModule = data.modules.find((mod: Module) => mod.id === params.id);

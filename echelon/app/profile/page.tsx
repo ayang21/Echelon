@@ -8,7 +8,7 @@ export default function UserProfile() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/data/sampleData.json')
+    fetch('/Data/sampleData.json')
       .then((res) => res.json())
       .then((data) => {
         setModules(data.modules || []);
