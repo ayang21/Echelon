@@ -5,30 +5,25 @@ import Link from 'next/link';
 import Quiz from '../Components/Quiz';
 import StreakTracker from '../Components/StreakTracker';
 
-const videos = [
-  { id: 1, title: 'Introduction to Investing', url: 'https://www.youtube.com/watch?v=example1' },
-  { id: 2, title: 'Why Investing Matters', url: 'https://www.youtube.com/watch?v=example2' },
-  { id: 3, title: 'Types of Investments', url: 'https://www.youtube.com/watch?v=example3' },
-];
-
-const quizzes = [
-  {
-    id: 1,
-    question: 'What is the primary goal of investing?',
-    options: ['To lose money', 'To grow wealth', 'To avoid taxes', 'To save money'],
-    correct: 1,
-  },
-];
-
 type ModulePageProps = {
   params: { id: string };
 };
 
 export default function ModulePage({ params }: ModulePageProps) {
-  const [progress, setProgress] = useState<number[]>([]); 
+  const [moduleData, setModuleData] = useState<any>(null);
+  const [progress, setProgress] = useState<number[]>([]);
   const [quizCompleted, setQuizCompleted] = useState(false);
 
   useEffect(() => {
+    // Fetch module info from sampleData.json
+    fetch('/data/sampleData.json')
+      .then((res) => res.json())
+      .then((data) => {
+        const foundModule = data.modules.find((mod: any) => mod.id === params.id);
+        setModuleData(foundModule);
+      });
+
+    // Fetch user progress
     fetch(`/api/progress/${params.id}`)
       .then((res) => res.json())
       .then((data) => setProgress(data.completedVideos || []));
@@ -57,6 +52,10 @@ export default function ModulePage({ params }: ModulePageProps) {
     });
   };
 
+  if (!moduleData) {
+    return <div className="min-h-screen bg-gray-50 p-6">Loading module...</div>;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="mb-4">
@@ -67,36 +66,42 @@ export default function ModulePage({ params }: ModulePageProps) {
         </Link>
       </div>
 
-      <h1 className="text-3xl font-bold text-center text-blue-700 mb-6">Module: Basics of Investing</h1>
+      <h1 className="text-3xl font-bold text-center text-blue-700 mb-6">
+        Module: {moduleData.title}
+      </h1>
 
       <StreakTracker days={5} />
 
       <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Videos</h2>
+        <h2 className="text-2xl font-semibold text-blue-700 mb-4">Videos</h2>
         <ul>
-          {videos.map((video, index) => (
+          {moduleData.videos.map((video: any, index: number) => (
             <li key={video.id} className="mb-4">
-              <button
+              <a
+                href={video.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => handleVideoComplete(video.id)}
-                disabled={index > 0 && !progress.includes(videos[index - 1].id)}
-                className={`block w-full text-left p-4 border rounded-lg ${
-                  progress.includes(video.id) ? 'bg-green-100' : 'bg-white'
+                className={`block w-full text-left p-4 border rounded-lg text-black ${
+                  progress.includes(video.id)
+                    ? 'bg-green-100 border-green-400'
+                    : 'bg-white border-gray-300 hover:border-blue-300 hover:bg-blue-50'
                 }`}
               >
                 {video.title}
-              </button>
+              </a>
             </li>
           ))}
         </ul>
       </div>
 
-      {progress.length === videos.length && !quizCompleted && (
+      {progress.length === moduleData.videos.length && !quizCompleted && (
         <div className="mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Quiz</h2>
+          <h2 className="text-2xl font-semibold text-blue-700 mb-4">Quiz</h2>
           <Quiz
-            question={quizzes[0].question}
-            options={quizzes[0].options}
-            correct={quizzes[0].correct}
+            question={moduleData.quiz[0].question}
+            options={moduleData.quiz[0].options}
+            correct={moduleData.quiz[0].correct}
           />
           <button
             onClick={handleQuizComplete}
@@ -107,7 +112,9 @@ export default function ModulePage({ params }: ModulePageProps) {
         </div>
       )}
 
-      {quizCompleted && <p className="text-green-600 font-bold">🎉 Quiz Completed!</p>}
+      {quizCompleted && (
+        <p className="text-green-600 font-bold text-lg mt-4">🎉 Quiz Completed!</p>
+      )}
     </div>
   );
 }

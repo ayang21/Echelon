@@ -62,15 +62,20 @@ export default function ModulePage({ params }: { params: { id: string } }) {
         <ul>
           {moduleData.videos.map((video, index) => (
             <li key={video.id} className="mb-4">
-              <button
-                onClick={() => handleVideoComplete(video.id)}
-                disabled={index > 0 && !progress.includes(moduleData.videos[index - 1].id)}
-                className={`block w-full text-left p-4 border rounded-lg text-gray-800 ${
-                  progress.includes(video.id) ? 'bg-green-100' : 'bg-white'
-                }`}
-              >
-                {video.title}
-              </button>
+              <a
+  href={video.url}
+  target="_blank"
+  rel="noopener noreferrer"
+  onClick={() => handleVideoComplete(video.id)}
+  className={`block w-full text-left p-4 border rounded-lg text-black ${
+    progress.includes(video.id)
+      ? 'bg-green-100 border-green-400'
+      : 'bg-white border-gray-300 hover:border-blue-300 hover:bg-blue-50'
+  }`}
+>
+  {video.title}
+</a>
+
             </li>
           ))}
         </ul>
