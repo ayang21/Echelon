@@ -13,9 +13,10 @@ export default function ModulePage({ params }: ModulePageProps) {
   const [moduleData, setModuleData] = useState<any>(null);
   const [progress, setProgress] = useState<number[]>([]);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [quizResults, setQuizResults] = useState<boolean[]>([]);
+
 
   useEffect(() => {
-    // Fetch module info from sampleData.json
     fetch('/data/sampleData.json')
       .then((res) => res.json())
       .then((data) => {
@@ -23,7 +24,6 @@ export default function ModulePage({ params }: ModulePageProps) {
         setModuleData(foundModule);
       });
 
-    // Fetch user progress
     fetch(`/api/progress/${params.id}`)
       .then((res) => res.json())
       .then((data) => setProgress(data.completedVideos || []));
@@ -52,6 +52,12 @@ export default function ModulePage({ params }: ModulePageProps) {
     });
   };
 
+  const handleQuizAnswer = (index: number, isCorrect: boolean) => {
+    const updatedResults = [...quizResults];
+    updatedResults[index] = isCorrect;
+    setQuizResults(updatedResults);
+  };
+  
   if (!moduleData) {
     return <div className="min-h-screen bg-gray-50 p-6">Loading module...</div>;
   }
@@ -98,11 +104,15 @@ export default function ModulePage({ params }: ModulePageProps) {
       {progress.length === moduleData.videos.length && !quizCompleted && (
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-blue-700 mb-4">Quiz</h2>
-          <Quiz
-            question={moduleData.quiz[0].question}
-            options={moduleData.quiz[0].options}
-            correct={moduleData.quiz[0].correct}
-          />
+          {moduleData.quiz.map((quizItem: any, index: number) => (
+            <Quiz
+              key={quizItem.id}
+              question={quizItem.question}
+              options={quizItem.options}
+              correct={quizItem.correct}
+              onAnswer={(isCorrect: boolean) => handleQuizAnswer(index, isCorrect)} // Pass the onAnswer callback
+            />
+          ))}
           <button
             onClick={handleQuizComplete}
             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"

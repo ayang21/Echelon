@@ -1,6 +1,13 @@
 import { useState } from 'react';
 
-export default function Quiz({ question, options, correct, onAnswer }: { question: string, options: string[], correct: number, onAnswer: (isCorrect: boolean) => void }) {
+type QuizProps = {
+  question: string;
+  options: string[];
+  correct: number;
+  onAnswer: (isCorrect: boolean) => void;
+};
+
+export default function Quiz({ question, options, correct, onAnswer }: QuizProps) {
   const [selected, setSelected] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 

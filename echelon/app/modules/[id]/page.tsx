@@ -95,7 +95,7 @@ export default function ModulePage({ params }: { params: { id: string } }) {
       {progress.length === moduleData.videos.length && !quizCompleted && (
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">Quiz</h2>
-          {moduleData.quiz.map((quizItem, index) => (
+          {moduleData.quiz.map((quizItem: Module['quiz'][0], index: number) => (
             <Quiz
               key={quizItem.id}
               question={quizItem.question}
