@@ -9,6 +9,7 @@ import StreakTracker from '../../Components/StreakTracker';
 export default function ModulePage({ params }: { params: { id: string } }) {
   const [moduleData, setModuleData] = useState<any>(null);
   const { progressState, updateProgress } = useProgress();
+  const [quizResults, setQuizResults] = useState<boolean[]>([]); // Track quiz answers
 
   useEffect(() => {
     fetch('/Data/sampleData.json')
@@ -16,6 +17,7 @@ export default function ModulePage({ params }: { params: { id: string } }) {
       .then((data) => {
         const thisModule = data.modules.find((mod: any) => mod.id === params.id);
         setModuleData(thisModule || null);
+        setQuizResults(new Array(thisModule?.quiz.length || 0).fill(false)); // Initialize quiz results
       })
       .catch((err) => console.error('Failed to load module data:', err));
   }, [params.id]);
@@ -24,8 +26,18 @@ export default function ModulePage({ params }: { params: { id: string } }) {
     updateProgress(params.id, videoId);
   };
 
+  const handleQuizAnswer = (index: number, isCorrect: boolean) => {
+    const updatedResults = [...quizResults];
+    updatedResults[index] = isCorrect;
+    setQuizResults(updatedResults);
+  };
+
   const handleQuizComplete = () => {
-    updateProgress(params.id, undefined, true);
+    if (quizResults.every((result) => result)) {
+      updateProgress(params.id, undefined, true);
+    } else {
+      alert('Please answer all questions correctly before completing the quiz.');
+    }
   };
 
   if (!moduleData) return <p className="text-center mt-10 text-gray-600">Loading module...</p>;
@@ -80,7 +92,7 @@ export default function ModulePage({ params }: { params: { id: string } }) {
                 question={quizItem.question}
                 options={quizItem.options}
                 correct={quizItem.correct}
-                onAnswer={() => {}}
+                onAnswer={(isCorrect: boolean) => handleQuizAnswer(index, isCorrect)}
               />
             ))}
             <button

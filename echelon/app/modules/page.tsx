@@ -13,7 +13,6 @@ type Module = {
 export default function ModulesPage() {
   const [modules, setModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
-  const { progressState } = useProgress();
 
   useEffect(() => {
     fetch('/Data/sampleData.json')
@@ -47,7 +46,6 @@ export default function ModulesPage() {
           <ModuleCard
             key={module.id}
             module={module}
-            progress={progressState[module.id]}
           />
         ))}
       </div>
