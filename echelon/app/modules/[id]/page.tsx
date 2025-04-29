@@ -9,7 +9,7 @@ type Module = {
   id: string;
   title: string;
   description: string;
-  videos: { id: number; title: string; url: string }[];
+  videos: { id: number; title: string; url: string; progress: boolean }[];
   quiz: { id: number; question: string; options: string[]; correct: number }[];
 };
 
@@ -28,13 +28,39 @@ export default function ModulePage({ params }: { params: { id: string } }) {
       .catch((err) => console.error('Failed to load module data:', err));
   }, [params.id]);
 
-  const handleVideoComplete = (videoId: number) => {
+  const handleVideoComplete = (videoId: number, mod: Module) => {
+    console.log(mod.title);
     if (!progress.includes(videoId)) {
       setProgress([...progress, videoId]);
+
+      setModuleData(prevModuleData => {
+          const videoIndex = prevModuleData?.videos.findIndex(video => video.id === videoId);
+
+          if (videoIndex === -1) {
+              console.warn(`Video with ID ${videoId} not found in module.`);
+              return prevModuleData;
+          }
+
+          const updatedVideos = prevModuleData?.videos.map((video, index) => {
+              if (index === videoIndex) {
+                  return {
+                      ...video,
+                      progress: true 
+                  };
+              }
+              return video;
+          });
+
+          return {
+              ...prevModuleData,
+              videos: updatedVideos
+          };
+      });
     }
   };
 
-  const handleQuizComplete = () => {
+  const handleQuizComplete = (mod: Module) => {
+    console.log(mod.title);
     setQuizCompleted(true);
   };
 
@@ -66,7 +92,7 @@ export default function ModulePage({ params }: { params: { id: string } }) {
   href={video.url}
   target="_blank"
   rel="noopener noreferrer"
-  onClick={() => handleVideoComplete(video.id)}
+  onClick={() => handleVideoComplete(video.id, moduleData)}
   className={`block w-full text-left p-4 border rounded-lg text-black ${
     progress.includes(video.id)
       ? 'bg-green-100 border-green-400'
@@ -93,7 +119,7 @@ export default function ModulePage({ params }: { params: { id: string } }) {
             />
           ))}
           <button
-            onClick={handleQuizComplete}
+            onClick={() => handleQuizComplete(moduleData)}
             className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
           >
             Complete Quiz
