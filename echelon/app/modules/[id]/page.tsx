@@ -17,6 +17,7 @@ export default function ModulePage({ params }: { params: { id: string } }) {
   const [moduleData, setModuleData] = useState<Module | null>(null);
   const [progress, setProgress] = useState<number[]>([]);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [quizResults, setQuizResults] = useState<boolean[]>([]);
 
   useEffect(() => {
     fetch('/data/sampleData.json')
@@ -24,6 +25,7 @@ export default function ModulePage({ params }: { params: { id: string } }) {
       .then((data) => {
         const thisModule = data.modules.find((mod: Module) => mod.id === params.id);
         setModuleData(thisModule || null);
+        setQuizResults(new Array(thisModule?.quiz.length || 0).fill(false));
       })
       .catch((err) => console.error('Failed to load module data:', err));
   }, [params.id]);
@@ -34,8 +36,18 @@ export default function ModulePage({ params }: { params: { id: string } }) {
     }
   };
 
+  const handleQuizAnswer = (index: number, isCorrect: boolean) => {
+    const updatedResults = [...quizResults];
+    updatedResults[index] = isCorrect;
+    setQuizResults(updatedResults);
+  };
+
   const handleQuizComplete = () => {
-    setQuizCompleted(true);
+    if (quizResults.every((result) => result)) {
+      setQuizCompleted(true);
+    } else {
+      alert('Please answer all questions correctly before completing the quiz.');
+    }
   };
 
   if (!moduleData) return <p className="text-center mt-10 text-gray-600">Loading module...</p>;
@@ -63,19 +75,18 @@ export default function ModulePage({ params }: { params: { id: string } }) {
           {moduleData.videos.map((video, index) => (
             <li key={video.id} className="mb-4">
               <a
-  href={video.url}
-  target="_blank"
-  rel="noopener noreferrer"
-  onClick={() => handleVideoComplete(video.id)}
-  className={`block w-full text-left p-4 border rounded-lg text-black ${
-    progress.includes(video.id)
-      ? 'bg-green-100 border-green-400'
-      : 'bg-white border-gray-300 hover:border-blue-300 hover:bg-blue-50'
-  }`}
->
-  {video.title}
-</a>
-
+                href={video.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => handleVideoComplete(video.id)}
+                className={`block w-full text-left p-4 border rounded-lg text-black ${
+                  progress.includes(video.id)
+                    ? 'bg-green-100 border-green-400'
+                    : 'bg-white border-gray-300 hover:border-blue-300 hover:bg-blue-50'
+                }`}
+              >
+                {video.title}
+              </a>
             </li>
           ))}
         </ul>
@@ -84,12 +95,13 @@ export default function ModulePage({ params }: { params: { id: string } }) {
       {progress.length === moduleData.videos.length && !quizCompleted && (
         <div className="mb-6">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">Quiz</h2>
-          {moduleData.quiz.map((quizItem) => (
+          {moduleData.quiz.map((quizItem, index) => (
             <Quiz
               key={quizItem.id}
               question={quizItem.question}
               options={quizItem.options}
               correct={quizItem.correct}
+              onAnswer={(isCorrect: boolean) => handleQuizAnswer(index, isCorrect)}
             />
           ))}
           <button
@@ -101,7 +113,9 @@ export default function ModulePage({ params }: { params: { id: string } }) {
         </div>
       )}
 
-      {quizCompleted && <p className="text-green-600 font-bold">🎉 Quiz Completed!</p>}
+      {quizCompleted && quizResults.every((result) => result) && (
+        <p className="text-green-600 font-bold text-lg mt-4">🎉 Quiz Completed!</p>
+      )}
     </div>
   );
 }
